@@ -1,2 +1,279 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
-:root{color-scheme:dark;--bg:#1c1e20;--panel:#272a2d;--line:#44494d;--ink:#e8e6df;--muted:#b0b2af;--accent:#d2bb85}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 'IBM Plex Sans',sans-serif}header{display:flex;justify-content:space-between;padding:22px 4%;border-bottom:1px solid var(--line)}a{color:var(--accent);text-underline-offset:4px}main{max-width:1480px;margin:auto;padding:34px 4%}h1{font:600 clamp(42px,5vw,70px)/.98 'Barlow Condensed',sans-serif;margin:16px 0 30px}h2{font:500 26px/1.2 'Barlow Condensed',sans-serif;margin:12px 0}.intro{display:flex;justify-content:space-between;gap:30px;align-items:center}.intro>p{max-width:370px;color:var(--muted)}.eyebrow{font-size:11px;letter-spacing:.08em;color:var(--muted)}button,input,select{font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);padding:9px 11px}button{cursor:pointer}button:disabled{opacity:.4;cursor:default}:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input,select{min-width:0;width:100%}label{font-size:12px;display:grid;gap:5px;color:var(--muted)}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:36px}.catalogue,aside{min-width:0}.filters{display:grid;grid-template-columns:1fr 1fr;gap:12px}#count{color:var(--muted);font-size:12px}.lot{width:100%;display:grid;grid-template-columns:42px minmax(0,1fr) 76px;gap:12px;align-items:start;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);padding:16px 10px}.lot[aria-pressed=true]{background:#36352f;box-shadow:inset 0 -2px var(--accent)}.lot small{display:block;color:var(--muted);font-size:11px;margin-top:5px}.lot .price{text-align:right;color:var(--accent)}.lot-no{color:var(--muted);font-variant-numeric:tabular-nums}aside{background:#242729;padding:23px;align-self:start;border-top:3px solid var(--accent)}#lot-title{font-size:30px}#lot-result,.assumption-note,#lot-source{font-size:12px}.assumption-note{border-top:1px solid var(--line);padding-top:18px;color:var(--muted);margin-top:22px}.inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}#error{color:#e8b0a5}#maximum{font:600 52px/1 'Barlow Condensed',sans-serif;color:var(--accent)}#verdict,#downside{font-size:12px;color:var(--muted)}#waterfall{width:100%;display:block;margin:20px 0}dl{display:grid;grid-template-columns:1fr auto;gap:8px;font-size:12px}dd{margin:0;font-variant-numeric:tabular-nums}#save{width:100%;border-color:var(--accent);margin-top:10px}.pagination{display:flex;justify-content:space-between;align-items:center;margin:18px 0}.sheet{margin-top:38px;border-top:1px solid var(--line);padding-top:20px}.sheet-heading{display:flex;justify-content:space-between;align-items:center}.saved-lot{display:grid;grid-template-columns:1fr auto auto;gap:18px;padding:14px 0;border-bottom:1px solid var(--line)}.saved-lot button{font-size:12px}.saved-lot small{display:block;color:var(--muted)}footer{font-size:12px;color:var(--muted);margin-top:40px;max-width:940px}@media(max-width:960px){.workspace{grid-template-columns:minmax(0,1fr)}.intro{display:block}.intro>p{max-width:none;margin-bottom:30px}aside{padding:20px}.lot{grid-template-columns:35px minmax(0,1fr) 66px;gap:8px}.saved-lot{grid-template-columns:1fr auto}.saved-lot button{grid-column:2}.filters{grid-template-columns:1fr 1fr}}@media(prefers-reduced-motion:no-preference){#maximum{animation:appear .25s ease-out}@keyframes appear{from{opacity:.5}to{opacity:1}}}
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+:root {
+    color-scheme: dark;
+    --bg: #1c1e20;
+    --panel: #272a2d;
+    --line: #44494d;
+    --ink: #e8e6df;
+    --muted: #b0b2af;
+    --accent: #d2bb85;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font:
+        14px/1.5 "IBM Plex Sans",
+        sans-serif;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 22px 4%;
+    border-bottom: 1px solid var(--line);
+}
+a {
+    color: var(--accent);
+    text-underline-offset: 4px;
+}
+main {
+    max-width: 1480px;
+    margin: auto;
+    padding: 34px 4%;
+}
+h1 {
+    font:
+        600 clamp(42px, 5vw, 70px) / 0.98 "Barlow Condensed",
+        sans-serif;
+    margin: 16px 0 30px;
+}
+h2 {
+    font:
+        500 26px/1.2 "Barlow Condensed",
+        sans-serif;
+    margin: 12px 0;
+}
+.intro {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    align-items: center;
+}
+.intro > p {
+    max-width: 370px;
+    color: var(--muted);
+}
+.eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+}
+button,
+input,
+select {
+    font: inherit;
+    color: inherit;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 9px 11px;
+}
+button {
+    cursor: pointer;
+}
+button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+input,
+select {
+    min-width: 0;
+    width: 100%;
+}
+label {
+    font-size: 12px;
+    display: grid;
+    gap: 5px;
+    color: var(--muted);
+}
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 36px;
+}
+.catalogue,
+aside {
+    min-width: 0;
+}
+.filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+#count {
+    color: var(--muted);
+    font-size: 12px;
+}
+.lot {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 76px;
+    gap: 12px;
+    align-items: start;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-top: 1px solid var(--line);
+    padding: 16px 10px;
+}
+.lot[aria-pressed="true"] {
+    background: #36352f;
+    box-shadow: inset 0 -2px var(--accent);
+}
+.lot small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 5px;
+}
+.lot .price {
+    text-align: right;
+    color: var(--accent);
+}
+.lot-no {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+aside {
+    background: #242729;
+    padding: 23px;
+    align-self: start;
+    border-top: 3px solid var(--accent);
+}
+#lot-title {
+    font-size: 30px;
+}
+#lot-result,
+.assumption-note,
+#lot-source {
+    font-size: 12px;
+}
+.assumption-note {
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    color: var(--muted);
+    margin-top: 22px;
+}
+.inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 22px 0;
+}
+#error {
+    color: #e8b0a5;
+}
+#maximum {
+    font:
+        600 52px/1 "Barlow Condensed",
+        sans-serif;
+    color: var(--accent);
+}
+#verdict,
+#downside {
+    font-size: 12px;
+    color: var(--muted);
+}
+#waterfall {
+    width: 100%;
+    display: block;
+    margin: 20px 0;
+}
+dl {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    font-size: 12px;
+}
+dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+#save {
+    width: 100%;
+    border-color: var(--accent);
+    margin-top: 10px;
+}
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 18px 0;
+}
+.sheet {
+    margin-top: 38px;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+}
+.sheet-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.saved-lot {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+}
+.saved-lot button {
+    font-size: 12px;
+}
+.saved-lot small {
+    display: block;
+    color: var(--muted);
+}
+footer {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 40px;
+    max-width: 940px;
+}
+@media (max-width: 960px) {
+    .workspace {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .intro {
+        display: block;
+    }
+    .intro > p {
+        max-width: none;
+        margin-bottom: 30px;
+    }
+    aside {
+        padding: 20px;
+    }
+    .lot {
+        grid-template-columns: 35px minmax(0, 1fr) 66px;
+        gap: 8px;
+    }
+    .saved-lot {
+        grid-template-columns: 1fr auto;
+    }
+    .saved-lot button {
+        grid-column: 2;
+    }
+    .filters {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (prefers-reduced-motion: no-preference) {
+    #maximum {
+        animation: appear 0.25s ease-out;
+    }
+    @keyframes appear {
+        from {
+            opacity: 0.5;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
