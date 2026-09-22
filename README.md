@@ -1,43 +1,37 @@
-# the hardware hunt
+# hardware hunt
 
-Turns auction lots into fee-adjusted buying limits, using condition and resale evidence.
+**[Open the bid desk](https://lolstar123.github.io/hardware-hunt/)**
 
-<!-- working-example:start -->
-## Try it in a minute
+An auction research and costing tool for hardware liquidation. Browse 770 actual historical lots, find the machines or components you care about, and work backwards from resale value to a maximum hammer bid.
 
-**[Live example](https://lolstar123.github.io/hardware-hunt/)** · [Example code](examples/portfolio/model.mjs) · [Run locally](examples/portfolio/README.md) · [Atul's website](https://atul-kanodia-fieldnotes.atulswaggalicious.chatgpt.site)
+![Auction bid desk](examples/portfolio/preview.png)
 
-Change fees and failure risk; calculate the maximum bid that preserves a target profit.
+## Try it
 
-<img src="examples/portfolio/preview.png" alt="the hardware hunt example inputs and calculated output" width="760">
+Search for RTX, workstation, laptop or a lot number. Select a lot to load its auction's actual premium and VAT assumptions. Enter your own resale value, failure probability, salvage, selling fees, collection, repair budget and profit target. The result updates immediately, showing cash costs, expected profit and the failed-item downside. Save several lots, revisit their assumptions and download a CSV bid sheet.
 
-<!-- working-example:end -->
+The prefilled resale and fault values are examples, not appraisals. The lot price is the historical observed hammer. A closed lot does not prove reserve was met or the sale completed. No bids are placed.
 
-## The project
+## Actual records, private limits excluded
 
-Track the lot, identify the hardware and estimate recoverable resale value. Include faults, buyer fees, VAT, transport and selling costs before setting a maximum hammer bid.
+- Exertis / MBV, Burnley, 3 September 2026: 693 lots; 25% buyer premium.
+- No.8 Sound & Vision / Pantera, Dartford, 16 September 2026: 77 lots; 17.5% buyer premium.
+- Both examples apply 20% VAT to hammer and premium, without assuming VAT recovery.
 
-A cheap GPU stops being cheap surprisingly quickly.
+The [exporter](tools/export_lots.py) copies only public titles, lot numbers, dates, observed hammers, bid counts, close flags and source links. It does not export private bid caps, resale estimates or bidder identities. The original watcher tracked bids and extensions; this public app investigates its final snapshots.
 
-## Find your way around
+## Calculation
 
-| Path | What is here |
-| --- | --- |
-| [examples/portfolio](examples/portfolio) | Runnable browser example and fixtures |
-| [model.mjs](examples/portfolio/model.mjs) | Actual calculation or workflow |
-| [model.test.mjs](examples/portfolio/model.test.mjs) | Reproducible checks and edge cases |
-| [PROVENANCE.md](PROVENANCE.md) | How this example relates to the full project |
-| [AGENTS.md](AGENTS.md) | Instructions for extending the example |
+Expected proceeds = working resale x (1 - failure probability) + salvage x failure probability, after selling fees. Deduct collection, repairs and target profit. Divide what remains by (1 + premium) x (1 + VAT) to obtain the maximum hammer. If fixed costs alone defeat the target, the tool says so. The bid ceiling must be rounded down to a valid auction increment.
 
-## Quick start
+## Run and check
 
 ```sh
 python -m http.server 8000 --directory examples/portfolio
 node --test examples/portfolio/model.test.mjs
+pip install playwright
+python -m playwright install chromium
+python tools/browser_audit.py
 ```
 
-Open http://localhost:8000. No dependencies, accounts or API keys needed.
-
-## What is included
-
-Authored hardware lots and editable fee assumptions. No live bids, account data or private buying limits.
+Open http://localhost:8000. No API key or login. [Calculation code](examples/portfolio/model.mjs), [interface](examples/portfolio/app.mjs), [public dataset](examples/portfolio/data/lots.json), [provenance](PROVENANCE.md).

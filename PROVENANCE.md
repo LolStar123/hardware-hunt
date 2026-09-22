@@ -1,16 +1,7 @@
-# Public example provenance
+# Public auction records
 
-Prepared 22 September 2026 for Atul Kanodia's project portfolio.
+770 lots exported from the author's final_results.csv files for Exertis / MBV auction 1 (3 September 2026) and No.8 Sound & Vision / Pantera (16 September 2026). The exporter uses a strict allowlist: lot number, title, observed hammer, aggregate bid count, close flag and public URL. No interest.json data, bidder identifiers, private caps or resale floors are included.
 
-## Original work
+Fee assumptions follow each original sale configuration: Exertis 25% premium, Pantera 17.5%, VAT 20% on hammer and premium. These apply to the archived sales, not future auctions. Titles and lot links originate with the auction catalogues. Closed flags reflect watcher observations, not settlement evidence.
 
-poe/auctions/bidwatch.py, auction fee configuration and resale-floor workflow.
-
-## This repository's example
-
-Authored hardware lots and editable fee assumptions. No live bids, account data or private buying limits.
-
-The example was built for public inspection of the documented workflow. It is not a claim
-that the complete production application fits into this one module. Existing repository
-source retains its original history. Generated records have no customer, player, account,
-or private-message identifiers. Inputs and outputs can be exported and inspected.
+Resale, failure probability and salvage values in the browser are editable illustrative inputs. They are not inferred appraisals. The app is a functional decision sheet, not a live bidding connection.
