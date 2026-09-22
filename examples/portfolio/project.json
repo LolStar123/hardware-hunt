@@ -1,0 +1,11 @@
+{
+  "id": "liquidation",
+  "repo": "hardware-hunt",
+  "title": "the hardware hunt",
+  "caption": "Turns auction lots into fee-adjusted buying limits, using condition and resale evidence.",
+  "workflow": "Track the lot, identify the hardware and estimate recoverable resale value. Include faults, buyer fees, VAT, transport and selling costs before setting a maximum hammer bid.",
+  "benefit": "A cheap GPU stops being cheap surprisingly quickly.",
+  "demo": "Change fees and failure risk; calculate the maximum bid that preserves a target profit.",
+  "source": "poe/auctions/bidwatch.py, auction fee configuration and resale-floor workflow.",
+  "boundary": "Authored hardware lots and editable fee assumptions. No live bids, account data or private buying limits."
+}
