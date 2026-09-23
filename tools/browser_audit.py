@@ -43,6 +43,10 @@ try:
         page.screenshot(path=str(ROOT/'examples/portfolio/preview.png'))
         page.set_viewport_size({'width':390,'height':844})
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'mobile overflow'
+        page.locator('#lots [data-id]').first.click()
+        assert page.locator('#lot-title').bounding_box()['y'] < 500
+        page.locator('.back-to-results').click()
+        page.wait_for_function('document.querySelector("#lots").getBoundingClientRect().top < 100')
         assert not errors,errors
         print('PASS: 770 real lots, filters, actual sale fees, custom costs, saved bid sheet, CSV and mobile')
         browser.close()

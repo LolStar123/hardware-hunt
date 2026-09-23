@@ -277,3 +277,16 @@ footer {
         }
     }
 }
+
+#bid-calculator {
+    scroll-margin-top: 18px;
+}
+.back-to-results {
+    display: none;
+}
+@media (max-width: 850px) {
+    .back-to-results {
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+}

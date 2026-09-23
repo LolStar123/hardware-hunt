@@ -61,18 +61,33 @@
                         ><span id="page"></span><button id="next">next</button>
                     </div>
                 </section>
-                <aside>
+                <aside id="bid-calculator">
+                    <a class="back-to-results" href="#lots">back to lots</a>
                     <p class="eyebrow" id="lot-sale"></p>
                     <h2 id="lot-title">select a lot</h2>
                     <p id="lot-result"></p>
                     <a id="lot-source" target="_blank" rel="noopener noreferrer"
                         >original lot page</a
                     >
+                    <div id="result">
+                        <p class="eyebrow">maximum hammer for your target</p>
+                        <strong id="maximum"></strong>
+                        <p id="verdict"></p>
+                        <svg
+                            id="waterfall"
+                            viewBox="0 0 340 110"
+                            role="img"
+                            aria-label="Hammer, premium, VAT and fixed costs"
+                        ></svg>
+                        <dl id="breakdown"></dl>
+                        <p id="downside"></p>
+                    </div>
                     <p class="assumption-note">
                         The resale and fault values below are editable examples,
                         not appraisals or Atul's private bid limits.
                     </p>
                     <form id="calculator">
+                        <h3>adjust your assumptions</h3>
                         <div class="inputs">
                             <label
                                 >working resale / GBP<input
@@ -143,19 +158,6 @@
                         </div>
                     </form>
                     <p id="error" role="alert"></p>
-                    <div id="result">
-                        <p class="eyebrow">maximum hammer for your target</p>
-                        <strong id="maximum"></strong>
-                        <p id="verdict"></p>
-                        <svg
-                            id="waterfall"
-                            viewBox="0 0 340 110"
-                            role="img"
-                            aria-label="Hammer, premium, VAT and fixed costs"
-                        ></svg>
-                        <dl id="breakdown"></dl>
-                        <p id="downside"></p>
-                    </div>
                     <button id="save">save to bid sheet</button>
                     <p id="saved-status" role="status"></p>
                 </aside>

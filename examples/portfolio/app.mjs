@@ -175,7 +175,11 @@ for (const id of ["search", "sale", "category", "sort"])
     });
 $("#lots").onclick = (e) => {
     const b = e.target.closest("[data-id]");
-    if (b) choose(data.lots.find((l) => l.id === b.dataset.id));
+    if (b) {
+        choose(data.lots.find((l) => l.id === b.dataset.id));
+        if (matchMedia("(max-width: 850px)").matches)
+            $("#bid-calculator").scrollIntoView({ block: "start" });
+    }
 };
 $("#previous").onclick = () => {
     page--;
