@@ -166,6 +166,9 @@ aside {
     gap: 12px;
     margin: 22px 0;
 }
+.advanced-costs { border-top: 1px solid var(--line); margin: 6px 0 16px; padding-top: 12px; }
+.advanced-costs summary { color: var(--accent); cursor: pointer; font-size: 12px; }
+.advanced-costs .inputs { margin: 14px 0 4px; }
 #error {
     color: #e8b0a5;
 }
@@ -290,3 +293,8 @@ footer {
         margin-bottom: 15px;
     }
 }
+
+/* Tactile without becoming decorative. */
+button{transition-property:color,background-color,border-color,scale;transition-duration:120ms;transition-timing-function:cubic-bezier(.2,0,0,1)}
+button:active:not(:disabled){scale:.96}
+@media(prefers-reduced-motion:reduce){button{transition:none}}

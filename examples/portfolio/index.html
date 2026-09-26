@@ -8,7 +8,7 @@
     <body>
         <header>
             <a
-                href="https://atul-kanodia-fieldnotes.atulswaggalicious.chatgpt.site"
+                href="https://lolstar123.github.io/just-a-little-further/"
                 >atul / hardware hunt</a
             ><a href="https://github.com/LolStar123/hardware-hunt"
                 >source code</a
@@ -23,9 +23,7 @@
                     <h1>hardware hunt / auction bids</h1>
                 </div>
                 <p>
-                    Find a lot. Put a resale value on it. Account for faults,
-                    fees and collection before deciding what you could afford to
-                    bid.
+                    Find a lot. Set your assumptions. Get the maximum hammer.
                 </p>
             </div>
             <div class="workspace">
@@ -83,8 +81,7 @@
                         <p id="downside"></p>
                     </div>
                     <p class="assumption-note">
-                        The resale and fault values below are editable examples,
-                        not appraisals or Atul's private bid limits.
+                        Editable estimates, never private bid limits.
                     </p>
                     <form id="calculator">
                         <h3>adjust your assumptions</h3>
@@ -110,44 +107,11 @@
                                     min="0"
                                     value="80" /></label
                             ><label
-                                >selling fee / %<input
-                                    id="selling"
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value="12" /></label
-                            ><label
-                                >collection / GBP<input
-                                    id="transport"
-                                    type="number"
-                                    min="0"
-                                    value="35" /></label
-                            ><label
-                                >repair & testing / GBP<input
-                                    id="repair"
-                                    type="number"
-                                    min="0"
-                                    value="20" /></label
-                            ><label
                                 >target profit / GBP<input
                                     id="profit"
                                     type="number"
                                     min="0"
                                     value="100" /></label
-                            ><label
-                                >buyer's premium / %<input
-                                    id="premium"
-                                    type="number"
-                                    min="0"
-                                    step=".5"
-                                    value="17.5" /></label
-                            ><label
-                                >VAT / %<input
-                                    id="vat"
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value="20" /></label
                             ><label
                                 >test hammer / GBP<input
                                     id="hammer"
@@ -156,6 +120,13 @@
                                     value="0"
                             /></label>
                         </div>
+                        <details class="advanced-costs"><summary>fees and collection</summary><div class="inputs">
+                            <label>selling fee / %<input id="selling" type="number" min="0" max="100" value="12" /></label>
+                            <label>collection / GBP<input id="transport" type="number" min="0" value="35" /></label>
+                            <label>repair & testing / GBP<input id="repair" type="number" min="0" value="20" /></label>
+                            <label>buyer's premium / %<input id="premium" type="number" min="0" step=".5" value="17.5" /></label>
+                            <label>VAT / %<input id="vat" type="number" min="0" max="100" value="20" /></label>
+                        </div></details>
                     </form>
                     <p id="error" role="alert"></p>
                     <button id="save">save to bid sheet</button>
