@@ -35,7 +35,7 @@ let data,
     page = 0,
     sheet = [],
     computed = null;
-const pageSize = 16;
+const pageSize = 8;
 function inputs() {
     return Object.fromEntries(fields.map((k) => [k, $("#" + k).value]));
 }
@@ -63,11 +63,10 @@ function renderLots() {
             .slice(page * pageSize, (page + 1) * pageSize)
             .map(
                 (l) =>
-                    `<button class="lot" data-id="${l.id}" aria-pressed="${selected?.id === l.id}"><span class="lot-no">${l.number}</span><span>${esc(l.title)}<small>${esc(data.sales[l.sale].location)} / ${data.sales[l.sale].date}</small></span><span class="price">${l.hammer === null ? "unknown" : money(l.hammer)}<small>observed hammer</small></span></button>`,
+                    `<button class="lot" data-id="${l.id}" aria-pressed="${selected?.id === l.id}"><span class="lot-no">${l.number}</span><span>${esc(l.title)}</span><span class="price">${l.hammer === null ? "unknown" : money(l.hammer)}</span></button>`,
             )
             .join("") || "<p>No lots match. Try a broader search.</p>";
-    $("#count").textContent =
-        `${lots.length} historical lots / select one to cost it`;
+    $("#count").textContent = `${lots.length} lots`;
     $("#page").textContent =
         `${lots.length ? page + 1 : 0} / ${Math.ceil(lots.length / pageSize)}`;
     $("#previous").disabled = page === 0;
@@ -87,8 +86,7 @@ function choose(lot) {
     $("#lot-sale").textContent =
         `lot ${lot.number} / ${sale.location} / ${sale.date}`;
     $("#lot-title").textContent = lot.title;
-    $("#lot-result").textContent =
-        `Observed hammer: ${lot.hammer === null ? "unknown" : money(lot.hammer)} / ${lot.bids ?? "unknown"} bids / ${lot.closed ? "closed" : "close not confirmed"}`;
+    $("#lot-result").textContent = `${lot.hammer === null ? "unknown hammer" : money(lot.hammer)} · ${lot.bids ?? "?"} bids`;
     $("#lot-source").href = lot.url;
     $("#premium").value = sale.premium;
     $("#vat").value = sale.vat;
@@ -109,7 +107,7 @@ function calculateNow() {
             Math.floor(computed.maxHammer * 100) / 100,
         );
         $("#verdict").textContent = computed.feasible
-            ? `At this hammer, the expected profit meets your ${money(Number($("#profit").value))} target. Round down to the auction's bid increment.`
+            ? `${money(Number($("#profit").value))} target covered`
             : "Even a free hammer cannot meet this target under your assumptions.";
         const entries = [
             ["hammer", Number($("#hammer").value)],
@@ -194,7 +192,7 @@ $("#save").onclick = () => {
     sheet = sheet.filter((x) => x.id !== selected.id);
     sheet.push({ ...selected, inputs: inputs() });
     renderSheet();
-    $("#saved-status").textContent = "Saved with your current assumptions.";
+    $("#saved-status").textContent = "saved.";
 };
 $("#sheet").onclick = (e) => {
     const b = e.target.closest("[data-remove]");
@@ -257,8 +255,7 @@ try {
     } catch {
         sheet = [];
     }
-    $("#provenance").textContent =
-        `${data.lots.length} public lot records from the 3 and 16 September 2026 auctions. Original fees: 25% premium at Exertis; 17.5% at Pantera; 20% VAT on hammer and premium. ${data.scope}`;
+    $("#provenance").textContent = `${data.lots.length} archived lots · september 2026`;
     choose(data.lots.find((l) => /RTX/i.test(l.title)) || data.lots[0]);
     renderSheet();
 } catch (e) {

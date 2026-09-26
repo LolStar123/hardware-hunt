@@ -29,11 +29,13 @@ try:
         page.locator('.lot').first.click()
         page.locator('#save').click()
         assert page.evaluate('__hardware.saved')==1
+        page.locator('details.sheet summary').click()
         with page.expect_download() as dl:page.locator('#export').click()
         assert 'max_hammer' in Path(dl.value.path()).read_text()
         page.reload(wait_until='networkidle')
         page.wait_for_function('window.__hardware?.ready')
         assert page.evaluate('__hardware.saved')==1
+        page.locator('details.filters summary').click()
         page.locator('#sale').select_option('exertis_a1')
         page.locator('.lot').first.click()
         assert page.locator('#premium').input_value()=='25'
