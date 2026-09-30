@@ -58,14 +58,19 @@ function renderLots() {
               : (a, b) => Number(a.number) - Number(b.number),
     );
     page = Math.min(page, Math.max(0, Math.ceil(lots.length / pageSize) - 1));
+    const selectedVisible = selected && lots.some((lot) => lot.id === selected.id),
+        selectedNote = selected && !selectedVisible
+            ? `<p class="selection-note">selected lot is outside this view <button type="button" data-reveal-selected>show it</button></p>`
+            : "";
     $("#lots").innerHTML =
-        lots
+        selectedNote +
+        (lots
             .slice(page * pageSize, (page + 1) * pageSize)
             .map(
                 (l) =>
                     `<button class="lot" data-id="${l.id}" aria-pressed="${selected?.id === l.id}"><span class="lot-no">${l.number}</span><span>${esc(l.title)}</span><span class="price">${l.hammer === null ? "unknown" : money(l.hammer)}</span></button>`,
             )
-            .join("") || "<p>No lots match. Try a broader search.</p>";
+            .join("") || "<p>No lots match. Try a broader search.</p>");
     $("#count").textContent = `${lots.length} lots`;
     $("#page").textContent =
         `${lots.length ? page + 1 : 0} / ${Math.ceil(lots.length / pageSize)}`;
@@ -178,6 +183,16 @@ for (const id of ["search", "sale", "category", "sort"])
         renderLots();
     });
 $("#lots").onclick = (e) => {
+    const reveal = e.target.closest("[data-reveal-selected]");
+    if (reveal && selected) {
+        $("#search").value = "";
+        $("#sale").value = "";
+        $("#category").value = "";
+        $("#sort").value = "lot";
+        page = Math.floor(data.lots.findIndex((lot) => lot.id === selected.id) / pageSize);
+        renderLots();
+        return;
+    }
     const b = e.target.closest("[data-id]");
     if (b) {
         choose(data.lots.find((l) => l.id === b.dataset.id));
@@ -262,7 +277,7 @@ try {
         sheet = [];
     }
     $("#provenance").textContent = `${data.lots.length} archived lots · september 2026`;
-    choose(data.lots.find((l) => /RTX/i.test(l.title)) || data.lots[0]);
+    choose(data.lots[0]);
     renderSheet();
 } catch (e) {
     $("#count").textContent = e.message;

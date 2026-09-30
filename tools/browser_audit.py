@@ -18,9 +18,14 @@ try:
         page.goto(os.environ.get('AUDIT_URL',f'http://127.0.0.1:{server.server_port}'),wait_until='networkidle')
         page.wait_for_function('window.__hardware?.ready')
         assert page.evaluate('__hardware.total')==770
-        assert page.locator('#trace-proceeds').inner_text().startswith('£')
-        assert page.locator('#trace-acquisition').inner_text().startswith('£')
-        assert page.locator('#trace-profit').inner_text().startswith('£')
+        assert page.locator('#trace-proceeds').inner_text().lstrip('-').startswith('£')
+        assert page.locator('#trace-acquisition').inner_text().lstrip('-').startswith('£')
+        assert page.locator('#trace-profit').inner_text().lstrip('-').startswith('£')
+        assert page.locator('.lot[aria-pressed="true"]').count() == 1
+        page.locator('#search').fill('laptop')
+        assert page.locator('[data-reveal-selected]').is_visible()
+        page.locator('[data-reveal-selected]').click()
+        assert not page.locator('[data-reveal-selected]').is_visible()
         before=page.evaluate('__hardware.result.maxHammer')
         page.locator('#resale').fill('1000')
         assert page.evaluate('__hardware.result.maxHammer')>before
@@ -50,6 +55,9 @@ try:
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'mobile overflow'
         page.locator('#lots [data-id]').first.click()
         assert page.locator('#lot-title').bounding_box()['y'] < 500
+        page.locator('#resale').focus()
+        resale_box=page.locator('#resale').bounding_box()
+        assert resale_box and 0 <= resale_box['y'] <= 844, 'resale input not brought into view'
         page.locator('.back-to-results').click()
         page.wait_for_function('document.querySelector("#lots").getBoundingClientRect().top < 100')
         assert not errors,errors
