@@ -22,10 +22,16 @@ try:
         assert page.locator('#trace-acquisition').inner_text().lstrip('-').startswith('£')
         assert page.locator('#trace-profit').inner_text().lstrip('-').startswith('£')
         assert page.locator('.lot[aria-pressed="true"]').count() == 1
+        assert page.locator('#search').input_value() == 'RTX'
+        assert 'RTX 3070' in page.locator('#lot-title').inner_text()
+        assert page.locator('.lot[aria-pressed="true"]').is_visible()
+        page.locator('#resale').fill('777')
         page.locator('#search').fill('laptop')
         assert page.locator('[data-reveal-selected]').is_visible()
+        assert page.locator('#resale').input_value() == '777'
         page.locator('[data-reveal-selected]').click()
         assert not page.locator('[data-reveal-selected]').is_visible()
+        assert page.locator('#resale').input_value() == '777'
         before=page.evaluate('__hardware.result.maxHammer')
         page.locator('#resale').fill('1000')
         assert page.evaluate('__hardware.result.maxHammer')>before

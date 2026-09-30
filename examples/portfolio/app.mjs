@@ -277,7 +277,12 @@ try {
         sheet = [];
     }
     $("#provenance").textContent = `${data.lots.length} archived lots · september 2026`;
-    choose(data.lots[0]);
+    const initialLot =
+        data.lots.find((lot) => /Zotac Gaming RTX 3070/i.test(lot.title)) ||
+        data.lots.find((lot) => /RTX/i.test(lot.title)) ||
+        data.lots[0];
+    $("#search").value = "RTX";
+    choose(initialLot);
     renderSheet();
 } catch (e) {
     $("#count").textContent = e.message;
