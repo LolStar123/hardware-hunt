@@ -25,6 +25,7 @@ try:
         assert page.locator('#search').input_value() == 'RTX'
         assert 'RTX 3070' in page.locator('#lot-title').inner_text()
         assert page.locator('.lot[aria-pressed="true"]').is_visible()
+        assert abs(page.evaluate('__hardware.result.maxHammer') - 9.306666666666667) < 1e-9
         page.locator('#resale').fill('777')
         page.locator('#search').fill('laptop')
         assert page.locator('[data-reveal-selected]').is_visible()
