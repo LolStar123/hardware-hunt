@@ -18,6 +18,9 @@ try:
         page.goto(os.environ.get('AUDIT_URL',f'http://127.0.0.1:{server.server_port}'),wait_until='networkidle')
         page.wait_for_function('window.__hardware?.ready')
         assert page.evaluate('__hardware.total')==770
+        assert page.locator('#trace-proceeds').inner_text().startswith('£')
+        assert page.locator('#trace-acquisition').inner_text().startswith('£')
+        assert page.locator('#trace-profit').inner_text().startswith('£')
         before=page.evaluate('__hardware.result.maxHammer')
         page.locator('#resale').fill('1000')
         assert page.evaluate('__hardware.result.maxHammer')>before

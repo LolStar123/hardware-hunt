@@ -138,11 +138,17 @@ function calculateNow() {
             .join("");
         $("#downside").textContent =
             `Working outcome: ${money(computed.workingProfit)} profit. Failed outcome: ${money(computed.failedProfit)}. These use your failure probability, not measured condition data.`;
+        $("#trace-proceeds").textContent = money(computed.proceeds);
+        $("#trace-acquisition").textContent = money(computed.acquisition);
+        $("#trace-profit").textContent = money(computed.expectedProfit);
     } catch (e) {
         computed = null;
         $("#error").textContent = e.message;
         $("#result").hidden = true;
         $("#save").disabled = true;
+        $("#trace-proceeds").textContent = "—";
+        $("#trace-acquisition").textContent = "—";
+        $("#trace-profit").textContent = "—";
     }
     if (window.__hardware) window.__hardware.result = computed;
 }
