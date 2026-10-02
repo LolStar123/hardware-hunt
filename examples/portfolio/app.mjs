@@ -115,7 +115,7 @@ function calculateNow() {
             ? `Ceiling for ${money(Number($("#profit").value))} expected profit.`
             : "Even a free hammer cannot meet this target under your assumptions.";
         $("#downside").textContent =
-            `Working outcome: ${money(computed.workingProfit)} profit. Failed outcome: ${money(computed.failedProfit)}. At your test hammer; condition is unverified.`;
+            `Working outcome: ${money(computed.workingProfit)} profit. Failed outcome: ${money(computed.failedProfit)}. At your test hammer.`;
         $("#trace-proceeds").textContent = money(computed.proceeds);
         $("#trace-acquisition").textContent = money(computed.acquisition);
         $("#trace-profit").textContent = money(computed.expectedProfit);
@@ -259,7 +259,6 @@ try {
     } catch {
         sheet = [];
     }
-    $("#provenance").textContent = `${data.lots.length} archived lots · september 2026`;
     const initialLot =
         data.lots.find((lot) => /Zotac Gaming RTX 3070/i.test(lot.title)) ||
         data.lots.find((lot) => /RTX/i.test(lot.title)) ||
