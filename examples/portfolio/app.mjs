@@ -58,7 +58,7 @@ function renderLots() {
               : (a, b) => Number(a.number) - Number(b.number),
     );
     page = Math.min(page, Math.max(0, Math.ceil(lots.length / pageSize) - 1));
-    const selectedVisible = selected && lots.some((lot) => lot.id === selected.id),
+    const selectedVisible = selected && lots.slice(page * pageSize, (page + 1) * pageSize).some((lot) => lot.id === selected.id),
         selectedNote = selected && !selectedVisible
             ? `<p class="selection-note">selected lot is outside this view <button type="button" data-reveal-selected>show it</button></p>`
             : "";
@@ -68,10 +68,10 @@ function renderLots() {
             .slice(page * pageSize, (page + 1) * pageSize)
             .map(
                 (l) =>
-                    `<button class="lot" data-id="${l.id}" aria-pressed="${selected?.id === l.id}"><span class="lot-no">${l.number}</span><span>${esc(l.title)}</span><span class="price">${l.hammer === null ? "unknown" : money(l.hammer)}</span></button>`,
+                    `<button class="lot" data-id="${l.id}" aria-pressed="${selected?.id === l.id}"><span class="lot-no">${l.number}</span><span class="lot-title-text">${esc(l.title)}</span><span class="price">${l.hammer === null ? "unknown" : money(l.hammer)}</span></button>`,
             )
             .join("") || "<p>No lots match. Try a broader search.</p>");
-    $("#count").textContent = `${lots.length} lots`;
+    $("#count").textContent = `${lots.length} of ${data.lots.length} lots`;
     $("#page").textContent =
         `${lots.length ? page + 1 : 0} / ${Math.ceil(lots.length / pageSize)}`;
     $("#previous").disabled = page === 0;
@@ -91,7 +91,7 @@ function choose(lot) {
     $("#lot-sale").textContent =
         `lot ${lot.number} / ${sale.location} / ${sale.date}`;
     $("#lot-title").textContent = lot.title;
-    $("#lot-result").textContent = `${lot.hammer === null ? "unknown hammer" : money(lot.hammer)} · ${lot.bids ?? "?"} bids`;
+    $("#lot-result").textContent = `${lot.hammer === null ? "Unknown" : money(lot.hammer)} observed hammer \u00b7 ${lot.bids ?? "unknown"} bids \u00b7 ${lot.closed ? "watcher marked closed" : "close unconfirmed"}`;
     $("#lot-source").href = lot.url;
     $("#premium").value = sale.premium;
     $("#vat").value = sale.vat;
@@ -112,45 +112,20 @@ function calculateNow() {
             Math.floor(computed.maxHammer * 100) / 100,
         );
         $("#verdict").textContent = computed.feasible
-            ? `${money(Number($("#profit").value))} target covered`
+            ? `Ceiling for ${money(Number($("#profit").value))} expected profit.`
             : "Even a free hammer cannot meet this target under your assumptions.";
-        const entries = [
-            ["hammer", Number($("#hammer").value)],
-            ["premium", computed.premium],
-            ["VAT", computed.vat],
-            [
-                "collection + repair",
-                Number($("#transport").value) + Number($("#repair").value),
-            ],
-        ];
-        let x = 0;
-        const colors = ["#b7c2c5", "#bfa980", "#9c9990", "#777f83"];
-        const scale = 310 / Math.max(1, computed.acquisition);
-        $("#waterfall").innerHTML = entries
-            .map(([name, v], i) => {
-                const w = v * scale,
-                    s = `<rect x="${x}" y="10" width="${w}" height="28" fill="${colors[i]}"/><text x="${(i % 2) * 165}" y="${64 + Math.floor(i / 2) * 24}" fill="${colors[i]}" font-size="11">${name}: ${money(v)}</text>`;
-                x += w;
-                return s;
-            })
-            .join("");
-        $("#breakdown").innerHTML = [
-            ["cash cost at test hammer", computed.acquisition],
-            ["expected resale after selling fees", computed.proceeds],
-            ["expected profit at test hammer", computed.expectedProfit],
-        ]
-            .map(([k, v]) => `<dt>${k}</dt><dd>${money(v)}</dd>`)
-            .join("");
         $("#downside").textContent =
-            `Working outcome: ${money(computed.workingProfit)} profit. Failed outcome: ${money(computed.failedProfit)}. These use your failure probability, not measured condition data.`;
+            `Working outcome: ${money(computed.workingProfit)} profit. Failed outcome: ${money(computed.failedProfit)}. At your test hammer; condition is unverified.`;
         $("#trace-proceeds").textContent = money(computed.proceeds);
         $("#trace-acquisition").textContent = money(computed.acquisition);
         $("#trace-profit").textContent = money(computed.expectedProfit);
+        $("#cash-trace").hidden = $("#downside").hidden = false;
     } catch (e) {
         computed = null;
         $("#error").textContent = e.message;
         $("#result").hidden = true;
         $("#save").disabled = true;
+        $("#cash-trace").hidden = $("#downside").hidden = true;
         $("#trace-proceeds").textContent = "—";
         $("#trace-acquisition").textContent = "—";
         $("#trace-profit").textContent = "—";
@@ -164,7 +139,7 @@ function renderSheet() {
         sheet
             .map(
                 (s) =>
-                    `<div class="saved-lot"><div>${esc(s.title)}<small>lot ${s.number} / ${esc(data.sales[s.sale].location)} / resale assumption ${money(Number(s.inputs.resale))}</small></div><strong>${money(calculate(s.inputs).maxHammer)}<small>max hammer</small></strong><button data-remove="${s.id}">remove</button></div>`,
+                    `<div class="saved-lot"><button class="restore" data-restore="${s.id}" type="button">${esc(s.title)}<small>lot ${s.number} / ${esc(data.sales[s.sale].location)} / resale assumption ${money(Number(s.inputs.resale))}</small></button><strong>${money(Math.floor(calculate(s.inputs).maxHammer * 100) / 100)}<small>max hammer</small></strong><button data-remove="${s.id}" aria-label="Remove saved lot ${esc(s.number)}">Remove</button></div>`,
             )
             .join("") || "<p>Save a costed lot to start your bid sheet.</p>";
     try {
@@ -189,7 +164,7 @@ $("#lots").onclick = (e) => {
         $("#sale").value = "";
         $("#category").value = "";
         $("#sort").value = "lot";
-        page = Math.floor(data.lots.findIndex((lot) => lot.id === selected.id) / pageSize);
+        page = Math.floor([...data.lots].sort((a,b) => Number(a.number) - Number(b.number)).findIndex((lot) => lot.id === selected.id) / pageSize);
         renderLots();
         return;
     }
@@ -213,9 +188,16 @@ $("#save").onclick = () => {
     sheet = sheet.filter((x) => x.id !== selected.id);
     sheet.push({ ...selected, inputs: inputs() });
     renderSheet();
-    $("#saved-status").textContent = "saved.";
+    $("#saved-status").textContent = "Saved to your bid sheet.";
 };
 $("#sheet").onclick = (e) => {
+    const restore = e.target.closest("[data-restore]");
+    if (restore) {
+        choose(data.lots.find(lot => lot.id === restore.dataset.restore));
+        $("#bid-calculator").scrollIntoView({block: "start"});
+        $("#resale").focus({preventScroll: true});
+        return;
+    }
     const b = e.target.closest("[data-remove]");
     if (b) {
         sheet = sheet.filter((x) => x.id !== b.dataset.remove);
@@ -234,7 +216,7 @@ $("#export").onclick = () => {
             failure_pct: s.inputs.failure,
             premium_pct: s.inputs.premium,
             vat_pct: s.inputs.vat,
-            max_hammer: r.maxHammer.toFixed(2),
+            max_hammer: (Math.floor(r.maxHammer * 100) / 100).toFixed(2),
             expected_profit_at_observed:
                 s.hammer === null
                     ? ""
@@ -253,6 +235,7 @@ $("#export").onclick = () => {
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
+$("#retry").onclick = () => location.reload();
 try {
     const r = await fetch("data/lots.json");
     if (!r.ok) throw Error("Lot records could not load");
@@ -270,7 +253,7 @@ try {
         const stored = JSON.parse(
             localStorage.getItem("hardware-bid-sheet") || "[]",
         );
-        sheet = stored.filter(
+        sheet = (Array.isArray(stored) ? stored : []).filter(
             (s) => data.lots.some((l) => l.id === s.id) && calculate(s.inputs),
         );
     } catch {
@@ -285,6 +268,11 @@ try {
     choose(initialLot);
     renderSheet();
 } catch (e) {
-    $("#count").textContent = e.message;
-    throw e;
+    $("#count").textContent = "Lot records could not load. Retry below.";
+    $("#lot-source").hidden = true;
+    $("#retry").hidden = false;
+    $("#lot-title").textContent = "Catalogue unavailable";
+    $("#lot-result").textContent = "Retry loading the bundled records.";
+    for (const control of document.querySelectorAll("input,select,#save,#export,#previous,#next")) control.disabled = true;
+    $("#result").hidden = $("#cash-trace").hidden = $("#downside").hidden = true;
 }
