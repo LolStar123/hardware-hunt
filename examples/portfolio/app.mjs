@@ -60,7 +60,7 @@ function renderLots() {
     page = Math.min(page, Math.max(0, Math.ceil(lots.length / pageSize) - 1));
     const selectedVisible = selected && lots.slice(page * pageSize, (page + 1) * pageSize).some((lot) => lot.id === selected.id),
         selectedNote = selected && !selectedVisible
-            ? `<p class="selection-note">selected lot is outside this view <button type="button" data-reveal-selected>show it</button></p>`
+            ? `<p class="selection-note">Selected lot hidden <button type="button" data-reveal-selected>Show lot</button></p>`
             : "";
     $("#lots").innerHTML =
         selectedNote +
@@ -70,7 +70,7 @@ function renderLots() {
                 (l) =>
                     `<button class="lot" data-id="${l.id}" aria-pressed="${selected?.id === l.id}"><span class="lot-no">${l.number}</span><span class="lot-title-text">${esc(l.title)}</span><span class="price">${l.hammer === null ? "unknown" : money(l.hammer)}</span></button>`,
             )
-            .join("") || "<p>No lots match. Try a broader search.</p>");
+            .join("") || "<p>No lots match.</p>");
     $("#count").textContent = `${lots.length} of ${data.lots.length} lots`;
     $("#page").textContent =
         `${lots.length ? page + 1 : 0} / ${Math.ceil(lots.length / pageSize)}`;
@@ -112,10 +112,10 @@ function calculateNow() {
             Math.floor(computed.maxHammer * 100) / 100,
         );
         $("#verdict").textContent = computed.feasible
-            ? `Ceiling for ${money(Number($("#profit").value))} expected profit.`
-            : "Even a free hammer cannot meet this target under your assumptions.";
+            ? `${money(Number($("#profit").value))} expected-profit target`
+            : "Zero hammer cannot meet this profit target.";
         $("#downside").textContent =
-            `Working outcome: ${money(computed.workingProfit)} profit. Failed outcome: ${money(computed.failedProfit)}. At your test hammer.`;
+            `At test hammer: working ${money(computed.workingProfit)} profit · Failed outcome ${money(computed.failedProfit)}`;
         $("#trace-proceeds").textContent = money(computed.proceeds);
         $("#trace-acquisition").textContent = money(computed.acquisition);
         $("#trace-profit").textContent = money(computed.expectedProfit);
@@ -141,7 +141,7 @@ function renderSheet() {
                 (s) =>
                     `<div class="saved-lot"><button class="restore" data-restore="${s.id}" type="button">${esc(s.title)}<small>lot ${s.number} / ${esc(data.sales[s.sale].location)} / resale assumption ${money(Number(s.inputs.resale))}</small></button><strong>${money(Math.floor(calculate(s.inputs).maxHammer * 100) / 100)}<small>max hammer</small></strong><button data-remove="${s.id}" aria-label="Remove saved lot ${esc(s.number)}">Remove</button></div>`,
             )
-            .join("") || "<p>Save a costed lot to start your bid sheet.</p>";
+            .join("") || "<p>No saved bids.</p>";
     try {
         localStorage.setItem("hardware-bid-sheet", JSON.stringify(sheet));
     } catch {
@@ -188,7 +188,7 @@ $("#save").onclick = () => {
     sheet = sheet.filter((x) => x.id !== selected.id);
     sheet.push({ ...selected, inputs: inputs() });
     renderSheet();
-    $("#saved-status").textContent = "Saved to your bid sheet.";
+    $("#saved-status").textContent = "Saved.";
 };
 $("#sheet").onclick = (e) => {
     const restore = e.target.closest("[data-restore]");
